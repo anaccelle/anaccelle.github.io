@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>anaccelle</title>
+<meta name="description" content="anaccelle — singer-songwriter. r&b / soul.">
+<meta property="og:title" content="anaccelle">
+<meta property="og:description" content="singer-songwriter. r&b / soul.">
+<meta property="og:url" content="https://anaccelle.com">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500&family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000;
+    --card-w:74vw;        /* 転がるカードの大きさ */
+    --card-h:64vh;
+    --fg:#ececec;
+    --muted:#7a7a7a;
+    --font:"Barlow Condensed","Noto Sans JP",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{background:#0b0b0b;color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;text-transform:lowercase;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- 3D cube ---------- */
+  /* 余白部分：濃いグレーのグラデーション */
+  .stage{position:fixed;inset:0;perspective:1400px;overflow:hidden;
+    background:radial-gradient(ellipse 90% 80% at 50% 48%, #2e2e2e 0%, #1a1a1a 45%, #0b0b0b 100%);touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+  .stage.dragging{cursor:grabbing}
+  .cube{position:absolute;left:50%;top:50%;width:var(--card-w);height:var(--card-h);margin-left:calc(var(--card-w) / -2);margin-top:calc(var(--card-h) / -2);transform-style:preserve-3d;will-change:transform}
+  .face{position:absolute;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 24px;box-shadow:0 40px 90px -20px rgba(0,0,0,.75);backface-visibility:hidden;-webkit-backface-visibility:hidden;visibility:hidden}
+  .face .shade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+  .face > .c{position:relative;width:100%;max-width:1040px}
+
+  /* ---------- fixed UI ---------- */
+  .burger{position:fixed;top:26px;right:30px;z-index:100;width:26px;height:18px;background:none;border:0;cursor:pointer}
+  .burger span{position:absolute;left:0;width:100%;height:1px;background:var(--fg);transition:transform .4s,opacity .3s,top .4s}
+  .burger span:nth-child(1){top:2px}.burger span:nth-child(2){top:9px}.burger span:nth-child(3){top:16px}
+  .open .burger span:nth-child(1){top:9px;transform:rotate(45deg)}
+  .open .burger span:nth-child(2){opacity:0}
+  .open .burger span:nth-child(3){top:9px;transform:rotate(-45deg)}
+  .menu{position:fixed;inset:0;z-index:90;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:33px;opacity:0;pointer-events:none;transition:opacity .5s}
+  .open .menu{opacity:1;pointer-events:auto}
+  .menu a{font-size:22.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);transition:color .2s;cursor:pointer}
+  .menu a:hover{color:var(--fg)}
+
+  .mark{position:fixed;top:22px;left:30px;z-index:80;font-size:20px;font-weight:500;opacity:0;transition:opacity .6s;cursor:pointer}
+  .mark.show{opacity:1}
+  .count{position:fixed;left:30px;bottom:24px;z-index:80;font-size:13px;letter-spacing:.12em;color:var(--muted)}
+  .dots{position:fixed;right:30px;top:50%;transform:translateY(-50%);z-index:80;display:flex;flex-direction:column;gap:12px}
+  .dots button{width:6px;height:6px;border-radius:50%;border:1px solid var(--muted);background:none;cursor:pointer;transition:background .3s,border-color .3s}
+  .dots button.on{background:var(--fg);border-color:var(--fg)}
+  .hint{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:80;font-size:12px;letter-spacing:.24em;color:var(--muted);transition:opacity .8s}
+  .hint.hide{opacity:0}
+
+  /* ---------- content ---------- */
+  .logo{font-size:clamp(48px,8.5vw,128px);font-weight:500;letter-spacing:.02em;line-height:1}
+  h1,h2{font-weight:400;font-size:clamp(36px,4.2vw,60px);line-height:1.05;margin-bottom:22px}
+  .lede{max-width:900px;margin:0 auto;font-size:clamp(20px,2.1vw,30px);line-height:1.5;color:#c9c9c9}
+  .lede,.jp{text-wrap:balance}
+  .jp{display:block;margin-top:20px;font-size:clamp(16px,1.8vw,26px);color:var(--muted);text-transform:none;letter-spacing:.04em}
+  .word{font-size:clamp(20px,2.1vw,30px);letter-spacing:.06em;position:relative;padding-bottom:4px;cursor:pointer}
+  .word::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--fg);transform:scaleX(0);transition:transform .4s}
+  .word:hover::after{transform:scaleX(1)}
+
+  .list{list-style:none;text-align:left;columns:2;column-gap:56px}
+  .list li{break-inside:avoid}
+  .list li{border-bottom:1px solid #222;border-top:0}
+  .list a{display:flex;justify-content:space-between;align-items:baseline;padding:6px 2px;font-size:clamp(20px,2.2vw,32px);transition:padding .3s,color .3s}
+  .list a:hover{padding-left:12px;color:#fff}
+  .list small{color:var(--muted);font-size:clamp(15px,1.5vw,22px);letter-spacing:.04em}
+  .new{font-size:clamp(12px,1.1vw,16px);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-left:10px}
+  iframe{border:0;border-radius:10px;width:100%;max-width:640px;filter:grayscale(1);margin-bottom:28px}
+  .row{display:flex;justify-content:center;flex-wrap:wrap;gap:20px 44px}
+  .small{margin-top:40px;font-size:clamp(16px,1.6vw,24px);color:var(--muted);letter-spacing:.06em}
+
+  /* visuals */
+  .video{width:min(100%, calc((var(--card-h) - 230px) * 16 / 9));aspect-ratio:16/9;margin:0 auto 26px}
+  .video iframe{width:100%;height:100%;max-width:none;margin:0;border-radius:4px;filter:none}
+
+  /* contact form */
+  .form{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px;text-align:left}
+  .form .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form input,.form select,.form textarea{width:100%;background:transparent;border:0;border-bottom:1px solid #333;color:var(--fg);font:inherit;font-size:clamp(17px,1.6vw,22px);padding:10px 2px;border-radius:0;outline:none;transition:border-color .3s;text-transform:none;-webkit-appearance:none;appearance:none}
+  .form textarea{resize:none;line-height:1.5}
+  .form select{cursor:pointer;color:var(--muted)}
+  .form select:valid{color:var(--fg)}
+  .form option{background:#000;color:var(--fg)}
+  .form input::placeholder,.form textarea::placeholder{color:#5f5f5f}
+  .form input:focus,.form select:focus,.form textarea:focus{border-color:var(--fg)}
+  .form .trap{position:absolute;left:-9999px;opacity:0;height:0;width:0}
+  .send{align-self:center;margin-top:10px;background:none;border:1px solid #555;color:var(--fg);font:inherit;font-size:clamp(18px,1.7vw,24px);letter-spacing:.2em;padding:10px 46px;cursor:pointer;transition:background .3s,color .3s,border-color .3s}
+  .send:hover{background:var(--fg);color:#000;border-color:var(--fg)}
+  .send:disabled{opacity:.4;cursor:default}
+  .status{text-align:center;font-size:clamp(14px,1.3vw,18px);color:var(--muted);min-height:1.4em;text-transform:none}
+  #contact-face .small{margin-top:14px}
+
+  @media(max-height:800px){
+    :root{--card-h:74vh}
+    .face{padding:28px 24px}
+    #contact-face h2{margin-bottom:10px}
+    .form{gap:6px}
+  }
+  @media(max-width:640px){
+    :root{--card-w:86vw;--card-h:70vh}
+    .face{padding:28px 18px}
+    .dots{right:16px}.count{left:20px}.mark{left:20px}.burger{right:20px}
+    .form .two{grid-template-columns:1fr}
+    .form{gap:8px}
+    .form textarea{height:4.6em}
+    .list{columns:1}
+    .list a{padding:5px 2px;font-size:18px}
+    .list small{font-size:14px}
+  }
+</style>
+</head>
+<body>
+
+<button class="burger" aria-label="menu" onclick="document.body.classList.toggle('open')"><span></span><span></span><span></span></button>
+<nav class="menu">
+  <a data-go="0">home</a>
+  <a data-go="3">music</a>
+  <a data-go="4">visuals</a>
+  <a data-go="5">contact</a>
+</nav>
+<a class="mark" id="mark" data-go="0">anaccelle</a>
+<div class="count" id="count">01 — 06</div>
+<div class="dots" id="dots"></div>
+<div class="hint" id="hint">scroll / drag</div>
+
+<div class="stage" id="stage">
+  <div class="cube" id="cube">
+
+    <!-- 0 intro -->
+    <section class="face"><div class="c"><div class="logo">anaccelle</div></div><div class="shade"></div></section>
+
+    <!-- 1 about -->
+    <section class="face"><div class="c">
+      <h1>anaccelle</h1>
+      <!-- ▼ プロフィール文はご本人の言葉に差し替えてください -->
+      <p class="lede">\ anaccelle is a singer-songwriter writing and producing intimate r&amp;b and soul. songs for 4am thoughts, quiet seasons, and the people who stay. /
+        <span class="jp">R&amp;B／ソウルを軸に、作詞・作曲を自ら手がけるシンガーソングライター。</span></p>
+    </div><div class="shade"></div></section>
+
+    <!-- 2 music (title) -->
+    <section class="face"><div class="c"><a class="word" data-go="3">music</a></div><div class="shade"></div></section>
+
+    <!-- 3 discography -->
+    <section class="face"><div class="c">
+      <h2>music</h2>
+      <ul class="list" id="list"></ul>
+    </div><div class="shade"></div></section>
+
+    <!-- 4 visuals -->
+    <section class="face"><div class="c">
+      <h2>visuals</h2>
+      <!-- ▼ MVなどが出たら、embed/ の後ろの動画IDを差し替えてください -->
+      <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/d91HGtwNPnk?rel=0" title="anaccelle - 4AM" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+      <div class="row">
+        <a class="word" href="https://open.spotify.com/artist/3wBMm9BsmztlM4bzcWuP7U" target="_blank" rel="noopener">spotify</a>
+        <a class="word" href="https://music.apple.com/us/artist/anaccelle/1825533931" target="_blank" rel="noopener">apple music</a>
+        <a class="word" href="https://www.youtube.com/watch?v=d91HGtwNPnk" target="_blank" rel="noopener">youtube</a>
+        <a class="word" href="https://www.instagram.com/anaccelle/" target="_blank" rel="noopener">instagram</a>
+      </div>
+    </div><div class="shade"></div></section>
+
+    <!-- 5 contact -->
+    <section class="face" id="contact-face"><div class="c">
+      <h2>contact</h2>
+      <!-- ▼ Formspree で作ったフォームのURLに差し替えてください（例: https://formspree.io/f/abcdwxyz） -->
+      <form class="form" id="form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="two">
+          <input name="name" type="text" placeholder="name / お名前" required autocomplete="name">
+          <input name="email" type="email" placeholder="email / メール" required autocomplete="email">
+        </div>
+        <select name="subject" required>
+          <option value="" disabled selected>subject / ご用件</option>
+          <option>booking / 出演依頼</option>
+          <option>press / 取材</option>
+          <option>collaboration / コラボ</option>
+          <option>other / その他</option>
+        </select>
+        <textarea name="message" rows="4" placeholder="message / お問い合わせ内容" required></textarea>
+        <input type="text" name="_gotcha" class="trap" tabindex="-1" autocomplete="off">
+        <button type="submit" class="send">send</button>
+        <p class="status" id="status" aria-live="polite"></p>
+      </form>
+      <p class="small">© <span id="yr">2026</span> anaccelle</p>
+    </div><div class="shade"></div></section>
+
+  </div>
+</div>
+
+<script>
+/* ---------- discography (新曲が出たら先頭に1行追加) ---------- */
+const SP = "https://open.spotify.com/artist/3wBMm9BsmztlM4bzcWuP7U";
+const releases = [
+  ["m!nd",       "2026.10.20", "https://open.spotify.com/album/7uCJtEO5ybdSsC7t40Bc6D"],
+  ["honeycrisp", "2026.09.19", "https://open.spotify.com/album/5eAoaF3EkU1EeBT58pkmAV"],
+  ["lately",     "2026.08.08", "https://open.spotify.com/album/1J7PU7oMeteNnibPbd323m"],
+  ["alr",        "2026.06.30", "https://open.spotify.com/album/0UjAzpRTtrZFAUHawygUpk"],
+  ["for you",    "2026.05.23", "https://open.spotify.com/album/0f4kUjmtLBcL3mbEmJrPQg"],
+  ["my side", "2026.03.21"],
+  ["stay",    "2026.01.23"],
+  ["haven",   "2025.12.26", "https://open.spotify.com/track/1dg8kaLovXjE1mLuxZuROm"],
+  ["seasons", "2025.09.09"],
+  ["drunk",   "2025"],
+  ["4am",     "2025.07.11", "https://open.spotify.com/track/3s9KBogeLUqLtm3Q11e2rD"],
+];
+document.getElementById("list").innerHTML = releases.map(([t,d,u],i)=>
+  `<li><a href="${u||SP}" target="_blank" rel="noopener"><span>${t}${i===0?'<span class="new">new</span>':''}</span><small>${d}</small></a></li>`).join("");
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+/* ---------- cube engine ---------- */
+const stage = document.getElementById("stage");
+const cube  = document.getElementById("cube");
+const faces = [...document.querySelectorAll(".face")];
+const N = faces.length;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let H = cube.offsetHeight;
+let pos = 0;        // 表示中の位置(小数 = 回転中)
+let target = 0;     // 目標の面
+let tiltX = 0, tiltY = 0, tX = 0, tY = 0;  // マウスに合わせた軽い傾き
+
+function layout(){
+  H = cube.offsetHeight;
+  faces.forEach((f,i)=> f.style.transform = `rotateX(${-i*90}deg) translateZ(${H/2}px)`);
+}
+
+function render(){
+  cube.style.transform =
+    `rotateY(${tiltY}deg) rotateX(${tiltX}deg) translateZ(${-H/2}px) rotateX(${pos*90}deg)`;
+  faces.forEach((f,i)=>{
+    const d = Math.abs(i - pos);
+    f.style.visibility = d < 1 ? "visible" : "hidden";
+    f.querySelector(".shade").style.opacity = Math.min(d, 1) * .7;
+  });
+}
+
+function loop(){
+  const k = reduce ? 1 : .085;
+  if(!dragging) pos += (target - pos) * k;
+  if(Math.abs(target - pos) < .0005 && !dragging) pos = target;
+  tiltX += (tX - tiltX) * .06;
+  tiltY += (tY - tiltY) * .06;
+  render();
+  requestAnimationFrame(loop);
+}
+
+function go(i){
+  target = Math.max(0, Math.min(N-1, i));
+  document.body.classList.remove("open");
+  ui();
+}
+
+/* indicators */
+const dots = document.getElementById("dots");
+dots.innerHTML = faces.map((_,i)=>`<button aria-label="${i+1}" data-go="${i}"></button>`).join("");
+function ui(){
+  const i = Math.round(target);
+  [...dots.children].forEach((d,j)=>d.classList.toggle("on", j===i));
+  document.getElementById("count").textContent =
+    `${String(i+1).padStart(2,"0")} — ${String(N).padStart(2,"0")}`;
+  document.getElementById("mark").classList.toggle("show", i>0);
+  if(i>0) document.getElementById("hint").classList.add("hide");
+}
+document.addEventListener("click", e=>{
+  const t = e.target.closest("[data-go]");
+  if(t){ e.preventDefault(); go(+t.dataset.go); }
+});
+
+/* wheel / trackpad */
+let lock = false, acc = 0;
+addEventListener("wheel", e=>{
+  e.preventDefault();
+  if(lock) return;
+  acc += e.deltaY;
+  if(Math.abs(acc) > 30){
+    go(Math.round(target) + (acc > 0 ? 1 : -1));
+    acc = 0; lock = true;
+    setTimeout(()=>lock=false, 900);
+  }
+}, {passive:false});
+
+/* drag (mouse / touch) — 指やマウスに合わせてサイコロのように転がる */
+let dragging = false, startY = 0, startPos = 0, moved = false;
+stage.addEventListener("pointerdown", e=>{
+  if(e.target.closest("iframe, input, textarea, select, button, label")) return;
+  dragging = true; moved = false;
+  startY = e.clientY; startPos = pos;
+  stage.classList.add("dragging");
+});
+addEventListener("pointermove", e=>{
+  if(!dragging) return;
+  const dy = startY - e.clientY;
+  if(Math.abs(dy) > 6) moved = true;
+  let p = startPos + dy / H * 1.4;
+  if(p < 0) p *= .3;                       // 端ではゴム感
+  if(p > N-1) p = N-1 + (p-(N-1)) * .3;
+  pos = p;
+});
+addEventListener("pointerup", e=>{
+  if(!dragging) return;
+  dragging = false;
+  stage.classList.remove("dragging");
+  const delta = pos - startPos;
+  // 少しでも転がしたら次の面へ、大きく転がしたら何面でも進む
+  const base = Math.round(startPos);
+  if(Math.abs(delta) > .12) go(base + Math.sign(delta) * Math.max(1, Math.round(Math.abs(delta))));
+  else go(base);
+});
+// ドラッグした時はリンクを開かない
+stage.addEventListener("click", e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; } }, true);
+
+/* keyboard */
+addEventListener("keydown", e=>{
+  if(e.target.closest && e.target.closest("input, textarea, select")) return;
+  if(["ArrowDown","PageDown"," "].includes(e.key)){ e.preventDefault(); go(Math.round(target)+1); }
+  if(["ArrowUp","PageUp"].includes(e.key)){ e.preventDefault(); go(Math.round(target)-1); }
+  if(e.key==="Home") go(0);
+  if(e.key==="End")  go(N-1);
+});
+
+
+/* ---------- contact form (Formspree) ---------- */
+const form = document.getElementById("form"), statusEl = document.getElementById("status");
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const btn = form.querySelector(".send");
+  btn.disabled = true; statusEl.textContent = "sending…";
+  try{
+    const r = await fetch(form.action, {method:"POST", body:new FormData(form), headers:{Accept:"application/json"}});
+    if(r.ok){ form.reset(); statusEl.textContent = "thank you. 送信しました。折り返しご連絡します。"; }
+    else throw 0;
+  }catch(_){ statusEl.textContent = "送信できませんでした。時間をおいてもう一度お試しください。"; }
+  btn.disabled = false;
+});
+
+addEventListener("resize", ()=>{ layout(); render(); });
+layout(); ui(); loop();
+</script>
+</body>
+</html>
