@@ -65,6 +65,20 @@
   .face.intro::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.1) 45%,rgba(0,0,0,.7) 100%)}
   .face.intro .logo{font-size:clamp(44px,7vw,110px)}
   @media(max-width:900px){.face.intro{background-image:url(images/top-sm.jpg?v=2)}}
+  /* プロフィールの写真（images/about.jpg） */
+  .face.about{background:#000 url(images/about.jpg?v=1) 75% 30% / cover no-repeat;justify-content:flex-start;text-align:left;padding-left:clamp(28px,6vw,90px)}
+  .face.about::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.55) 35%,rgba(0,0,0,0) 62%)}
+  .face.about .c{max-width:min(46%,560px);margin:0}
+  .face.about .lede{margin:0;font-size:clamp(18px,1.7vw,26px);color:#e6e6e6}
+  .face.about .jp{color:#bdbdbd;font-size:clamp(14px,1.3vw,20px)}
+  @media(max-width:900px){
+    .face.about{background-image:url(images/about-sm.jpg?v=1);background-size:auto 118%;background-position:64% 0%;align-items:flex-end;padding:28px 22px}
+    .face.about::before{background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.88) 78%)}
+    .face.about .c{max-width:100%}
+    .face.about h1{font-size:30px;margin-bottom:8px}
+    .face.about .lede{font-size:14px;line-height:1.55}
+    .face.about .jp{font-size:13px;margin-top:10px}
+  }
   h1,h2{font-weight:400;font-size:clamp(36px,4.2vw,60px);line-height:1.05;margin-bottom:22px}
   .lede{max-width:900px;margin:0 auto;font-size:clamp(20px,2.1vw,30px);line-height:1.5;color:#c9c9c9}
   .lede,.jp{text-wrap:balance}
@@ -145,7 +159,7 @@
     <section class="face intro"><div class="c"><div class="logo">anaccelle</div></div><div class="shade"></div></section>
 
     <!-- 1 about -->
-    <section class="face"><div class="c">
+    <section class="face about"><div class="c">
       <h1>anaccelle</h1>
       <!-- ▼ プロフィール文はご本人の言葉に差し替えてください -->
       <p class="lede">\ anaccelle is a singer-songwriter writing and producing intimate r&amp;b and soul. songs for 4am thoughts, quiet seasons, and the people who stay. /
