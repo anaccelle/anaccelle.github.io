@@ -29,7 +29,7 @@ n=n.replace('<meta name="theme-color"',`<script type="application/ld+json" id="r
 fs.writeFileSync('news.html',n);
 // ---- index.html song list
 let s=fs.readFileSync('index.html','utf8');
-const rsrc=s.slice(s.indexOf('const IMG ='), s.indexOf('document.getElementById("list").innerHTML'));
+const rsrc=s.slice(s.indexOf('const IMG ='), s.indexOf('];', s.indexOf('const releases'))+2);
 const releases=new Function(rsrc+';return releases;')();
 const IMG=h=>'https://i.scdn.co/image/ab67616d00001e02'+h, AL=id=>'https://open.spotify.com/album/'+id;
 const lis=releases.map(([t,d,id,img],i)=>`<li><a href="${AL(id)}" target="_blank" rel="noopener"><span class="art"><img src="${IMG(img)}" alt="anaccelle - ${esc(t)} cover" loading="lazy" draggable="false" width="300" height="300">${i===0?'<span class="new">new</span>':''}</span><span class="t">${esc(t)}</span><small>${d}</small></a></li>`).join('');
