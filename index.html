@@ -184,6 +184,21 @@
   @media(max-width:900px){.face.musicwall{background-image:url(images/music-sm.jpg?v=1);background-position:62% 50%}}
   .face.about{cursor:pointer}
   .face.about .more{display:inline-block;margin-top:26px;font-size:clamp(18px,1.6vw,24px);letter-spacing:.1em}
+  /* follow buttons */
+  .fbtn{display:inline-flex;align-items:center;gap:9px;padding:9px 16px 9px 12px;border-radius:999px;font-size:clamp(14px,1.15vw,16px);letter-spacing:.05em;text-transform:lowercase;color:#fff;transition:transform .25s,filter .25s;white-space:nowrap}
+  .fbtn svg{width:18px;height:18px;flex:none}
+  .fbtn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+  .fbtn.sp{background:#1DB954;color:#000}
+  .fbtn.ig{background:linear-gradient(45deg,#f9a03a,#e1306c 50%,#8a3ab9)}
+  .followbar{position:fixed;z-index:85;left:50%;bottom:clamp(22px,4.5vh,44px);transform:translateX(-50%);display:flex;gap:12px}
+  .followbar .fbtn{box-shadow:0 10px 30px -8px rgba(0,0,0,.7)}
+  .hint{bottom:auto !important;top:clamp(26px,4vh,40px)}
+  @media(max-width:640px){
+    .followbar{bottom:max(18px,env(safe-area-inset-bottom));gap:8px}
+    .fbtn{padding:8px 13px 8px 10px;font-size:13px;gap:7px}
+    .fbtn svg{width:16px;height:16px}
+    .count{bottom:auto;top:62px;left:20px}
+  }
   /* トップの最新ニュース */
   .latest{position:absolute;z-index:2;top:clamp(16px,3vh,28px);left:clamp(16px,2.5vw,32px);display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:clamp(14px,1.2vw,17px);letter-spacing:.04em;transition:background .3s,border-color .3s}
   .latest:hover{background:rgba(0,0,0,.75);border-color:rgba(255,255,255,.35)}
@@ -279,6 +294,8 @@
 <a class="mark" id="mark" data-go="0">anaccelle</a>
 <div class="count" id="count">01 / 06</div>
 <div class="dots" id="dots"></div>
+
+<div class="followbar" aria-label="follow anaccelle"><a class="fbtn sp" href="https://open.spotify.com/artist/3wBMm9BsmztlM4bzcWuP7U" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1 .25c-2.85-1.74-6.43-2.13-10.65-1.17a.75.75 0 1 1-.33-1.46c4.62-1.05 8.58-.6 11.74 1.33.36.22.47.69.25 1.05zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.26-2-8.23-2.58-12.09-1.41a.94.94 0 1 1-.54-1.8c4.4-1.33 9.88-.69 13.61 1.6.44.27.58.85.31 1.3zm.13-3.4C15.2 8.32 8.77 8.1 5.05 9.23a1.13 1.13 0 1 1-.65-2.16c4.27-1.3 11.37-1.05 15.85 1.61a1.13 1.13 0 0 1-1.15 1.95z"/></svg><span>follow on spotify</span></a><a class="fbtn ig" href="https://www.instagram.com/anaccelle/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.2 15.58 2.2 15.2 2.2 12s0-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.2 8.8 2.2 12 2.2zm0 4.86a4.94 4.94 0 1 0 0 9.88 4.94 4.94 0 0 0 0-9.88zm0 8.15a3.21 3.21 0 1 1 0-6.42 3.21 3.21 0 0 1 0 6.42zm5.14-9.5a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3z"/></svg><span>follow on instagram</span></a></div>
 <div class="hint" id="hint">scroll / drag</div>
 
 <div class="stage" id="stage">
@@ -365,66 +382,83 @@ document.getElementById("yr").textContent = new Date().getFullYear();
 // トップの最新ニュース（いちばん新しい曲を自動表示）
 document.getElementById("latestText").textContent = `new single “${releases[0][0]}” out now`;
 
-/* ---------- cube engine ---------- */
+/* ---------- cube engine（縦にも横にも転がる） ---------- */
 const stage = document.getElementById("stage");
 const cube  = document.getElementById("cube");
 const faces = [...document.querySelectorAll(".face")];
 const N = faces.length;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-let H = cube.offsetHeight;
-let pos = 0;        // 表示中の位置(小数 = 回転中)
-let target = 0;     // 目標の面
-let tiltX = 0, tiltY = 0, tX = 0, tY = 0;  // マウスに合わせた軽い傾き
-
 const mod = (a,n)=>((a%n)+n)%n;
-// ループ: 各面を「今の位置にいちばん近い周回」に置く（最後の面の次は最初の面）
-const slot = i => i + N*Math.round((pos - i)/N);
-function layout(){ H = cube.offsetHeight; }
 
+let W = cube.offsetWidth, H = cube.offsetHeight;
+let cur = 0;          // 表示中の面
+let anim = null;      // {to, axis:"x"|"y", dir:±1, p:0..1, goal:0|1}
+let dragging = false;
+
+function layout(){ W = cube.offsetWidth; H = cube.offsetHeight; }
+
+// 縦(x軸): 次の面は下から / 横(y軸): 次の面は右から
+function faceTf(axis, rot){
+  const d = (axis === "y" ? W : H) / 2;
+  return axis === "y" ? `rotateY(${rot}deg) translateZ(${d}px)` : `rotateX(${rot}deg) translateZ(${d}px)`;
+}
 function render(){
-  cube.style.transform =
-    `rotateY(${tiltY}deg) rotateX(${tiltX}deg) translateZ(${-H/2}px) rotateX(${pos*90}deg)`;
-  faces.forEach((f,i)=>{
-    const s = slot(i);
-    f.style.transform = `rotateX(${-s*90}deg) translateZ(${H/2}px)`;
-    const d = Math.abs(s - pos);
-    f.style.visibility = d < 1 ? "visible" : "hidden";
-    f.querySelector(".shade").style.opacity = Math.min(d, 1) * .7;
-  });
+  faces.forEach(f=>{ f.style.visibility = "hidden"; });
+  const from = faces[cur];
+  if(!anim){
+    cube.style.transform = `translateZ(${-H/2}px)`;
+    from.style.transform = faceTf("x", 0);
+    from.style.visibility = "visible";
+    from.querySelector(".shade").style.opacity = 0;
+    return;
+  }
+  const {to, axis, dir, p} = anim;
+  const d = (axis === "y" ? W : H) / 2;
+  const ang = p * 90;
+  cube.style.transform = axis === "y"
+    ? `translateZ(${-d}px) rotateY(${-dir*ang}deg)`
+    : `translateZ(${-d}px) rotateX(${dir*ang}deg)`;
+  from.style.transform = faceTf(axis, 0);
+  const t = faces[to];
+  t.style.transform = faceTf(axis, axis === "y" ? dir*90 : -dir*90);
+  from.style.visibility = t.style.visibility = "visible";
+  from.querySelector(".shade").style.opacity = p * .7;
+  t.querySelector(".shade").style.opacity = (1 - p) * .7;
 }
 
 function loop(){
-  const k = reduce ? 1 : .085;
-  if(!dragging) pos += (target - pos) * k;
-  if(Math.abs(target - pos) < .0005 && !dragging){
-    pos = target;
-    if(target < 0 || target >= N){ const k = Math.floor(target/N)*N; pos -= k; target -= k; }
+  if(anim && !dragging){
+    const k = reduce ? 1 : .085;
+    anim.p += (anim.goal - anim.p) * k;
+    if(Math.abs(anim.goal - anim.p) < .002){
+      if(anim.goal === 1) cur = anim.to;
+      anim = null; ui();
+    }
   }
-  tiltX += (tX - tiltX) * .06;
-  tiltY += (tY - tiltY) * .06;
   render();
   requestAnimationFrame(loop);
 }
 
-function go(i){            // 指定の面へ（近い方向に回る）
-  const cur = Math.round(target);
-  let d = mod(i - cur, N); if(d > N/2) d -= N;
-  target = cur + d;
+function start(to, axis, dir){
+  if(anim){ if(anim.goal === 1) cur = anim.to; anim = null; }
+  to = mod(to, N);
+  if(to === cur) return;
+  anim = {to, axis, dir, p:0, goal:1};
   document.body.classList.remove("open");
   ui();
 }
-function step(n){          // 前後に回る（端でループ）
-  target = Math.round(target) + n;
-  document.body.classList.remove("open");
-  ui();
+function step(n, axis="x"){ start(cur + n, axis, Math.sign(n)); }
+function go(i){            // 指定の面へ（近い方向に縦に回る）
+  let d = mod(i - cur, N); if(d > N/2) d -= N;
+  if(d) start(i, "x", Math.sign(d));
+  else document.body.classList.remove("open");
 }
 
 /* indicators */
 const dots = document.getElementById("dots");
 dots.innerHTML = faces.map((_,i)=>`<button aria-label="${i+1}" data-go="${i}"></button>`).join("");
 function ui(){
-  const i = mod(Math.round(target), N);
+  const i = anim && anim.goal === 1 ? anim.to : cur;
   [...dots.children].forEach((d,j)=>d.classList.toggle("on", j===i));
   document.getElementById("count").textContent =
     `${String(i+1).padStart(2,"0")} / ${String(N).padStart(2,"0")}`;
@@ -436,55 +470,62 @@ document.addEventListener("click", e=>{
   if(t){ e.preventDefault(); go(+t.dataset.go); }
 });
 
-/* wheel / trackpad */
-let lock = false, acc = 0;
+/* wheel / trackpad（縦スクロール→縦、横スクロール→横） */
+let lock = false, accX = 0, accY = 0;
 addEventListener("wheel", e=>{
   e.preventDefault();
   if(lock) return;
-  acc += e.deltaY;
-  if(Math.abs(acc) > 30){
-    step(acc > 0 ? 1 : -1);
-    acc = 0; lock = true;
+  accX += e.deltaX; accY += e.deltaY;
+  const horiz = Math.abs(accX) > Math.abs(accY);
+  const v = horiz ? accX : accY;
+  if(Math.abs(v) > 30){
+    step(v > 0 ? 1 : -1, horiz ? "y" : "x");
+    accX = accY = 0; lock = true;
     setTimeout(()=>lock=false, 900);
   }
 }, {passive:false});
 
-/* drag (mouse / touch) — 指やマウスに合わせてサイコロのように転がる */
-let dragging = false, startY = 0, startPos = 0, moved = false;
+/* drag (mouse / touch)：動かした方向に転がる */
+let sx = 0, sy = 0, moved = false, dAxis = null;
 stage.addEventListener("pointerdown", e=>{
   if(e.target.closest("iframe, input, textarea, select, button, label")) return;
-  dragging = true; moved = false;
-  startY = e.clientY; startPos = pos;
+  if(anim){ if(anim.goal === 1) cur = anim.to; anim = null; ui(); }
+  dragging = true; moved = false; dAxis = null;
+  sx = e.clientX; sy = e.clientY;
   stage.classList.add("dragging");
 });
 addEventListener("pointermove", e=>{
   if(!dragging) return;
-  const dy = startY - e.clientY;
-  if(Math.abs(dy) > 6) moved = true;
-  pos = startPos + dy / H * 1.4;
+  const dx = sx - e.clientX, dy = sy - e.clientY;
+  if(!dAxis){
+    if(Math.max(Math.abs(dx), Math.abs(dy)) < 8) return;
+    moved = true;
+    dAxis = Math.abs(dx) > Math.abs(dy) ? "y" : "x";
+  }
+  const v = dAxis === "y" ? dx / W : dy / H;
+  const dir = v >= 0 ? 1 : -1;
+  if(!anim || anim.dir !== dir || anim.axis !== dAxis) anim = {to: mod(cur + dir, N), axis: dAxis, dir, p:0, goal:0};
+  anim.p = Math.min(1, Math.abs(v) * 1.4);
 });
-addEventListener("pointerup", e=>{
+addEventListener("pointerup", ()=>{
   if(!dragging) return;
   dragging = false;
   stage.classList.remove("dragging");
-  const delta = pos - startPos;
-  // 少しでも転がしたら次の面へ、大きく転がしたら何面でも進む
-  const base = Math.round(startPos);
-  if(Math.abs(delta) > .12) step(base - Math.round(target) + Math.sign(delta) * Math.max(1, Math.round(Math.abs(delta))));
-  else step(base - Math.round(target));
+  if(anim){ anim.goal = anim.p > .12 ? 1 : 0; ui(); }
 });
 // ドラッグした時はリンクを開かない
 stage.addEventListener("click", e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; } }, true);
 
-/* keyboard */
+/* keyboard（↑↓は縦、←→は横） */
 addEventListener("keydown", e=>{
   if(e.target.closest && e.target.closest("input, textarea, select")) return;
   if(["ArrowDown","PageDown"," "].includes(e.key)){ e.preventDefault(); step(1); }
   if(["ArrowUp","PageUp"].includes(e.key)){ e.preventDefault(); step(-1); }
+  if(e.key==="ArrowRight"){ e.preventDefault(); step(1, "y"); }
+  if(e.key==="ArrowLeft"){ e.preventDefault(); step(-1, "y"); }
   if(e.key==="Home") go(0);
   if(e.key==="End")  go(N-1);
 });
-
 
 /* ---------- contact form (Formspree) ---------- */
 const form = document.getElementById("form"), statusEl = document.getElementById("status");
@@ -505,7 +546,7 @@ document.querySelector(".face.about").addEventListener("click", e=>{
   location.href = "about.html";
 });
 const HASH = {"#music":3, "#visuals":4, "#contact":5, "#about":1};
-if(HASH[location.hash]!==undefined){ pos = target = HASH[location.hash]; }
+if(HASH[location.hash]!==undefined){ cur = HASH[location.hash]; }
 addEventListener("resize", ()=>{ layout(); render(); });
 layout(); ui(); loop();
 </script>
