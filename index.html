@@ -65,6 +65,12 @@
   .face.intro::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.1) 45%,rgba(0,0,0,.7) 100%)}
   .face.intro .logo{font-size:clamp(44px,7vw,110px)}
   @media(max-width:900px){.face.intro{background-image:url(images/top-sm.jpg?v=2)}}
+  /* 3ページ目の写真（images/music.jpg） */
+  .face.musicwall{background:#000 url(images/music.jpg?v=1) 60% 88% / cover no-repeat;align-items:flex-start;padding-top:clamp(40px,10vh,110px)}
+  .face.musicwall::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,.12) 45%,rgba(0,0,0,.05) 100%)}
+  .face.musicwall .word{font-size:clamp(34px,4.2vw,60px);letter-spacing:.08em;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+  .face.musicwall .word::after{height:2px}
+  @media(max-width:900px){.face.musicwall{background-image:url(images/music-sm.jpg?v=1);background-position:62% 50%}}
   /* プロフィールの写真（images/about.jpg） */
   .face.about{background:#000 url(images/about.jpg?v=1) 75% 30% / cover no-repeat;justify-content:flex-start;text-align:left;padding-left:clamp(28px,6vw,90px)}
   .face.about::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.55) 35%,rgba(0,0,0,0) 62%)}
@@ -167,7 +173,7 @@
     </div><div class="shade"></div></section>
 
     <!-- 2 music (title) -->
-    <section class="face"><div class="c"><a class="word" data-go="3">music</a></div><div class="shade"></div></section>
+    <section class="face musicwall"><div class="c"><a class="word" data-go="3">music</a></div><div class="shade"></div></section>
 
     <!-- 3 discography -->
     <section class="face"><div class="c">
