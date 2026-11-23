@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>news — anaccelle</title>
+<meta name="description" content="anaccelle news — new releases, features and press.">
+<meta property="og:title" content="news — anaccelle">
+<meta property="og:description" content="New releases, features and press.">
+<meta property="og:url" content="https://anaccelle.com/news.html">
+<meta property="og:image" content="https://anaccelle.com/images/top.jpg">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root{--fg:#ececec;--muted:#8a8a8a;--line:#232323;--font:"Barlow Condensed","Noto Sans JP",system-ui,-apple-system,sans-serif}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#000;color:var(--fg);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  .bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 80% 75% at 50% 50%,rgba(0,0,0,.35) 0%,rgba(0,0,0,.7) 70%,rgba(0,0,0,.88) 100%),#000 url(images/bg.jpg?v=1) 50% 62%/cover no-repeat}
+
+  header{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:22px 30px;text-transform:lowercase;background:linear-gradient(180deg,rgba(0,0,0,.7),rgba(0,0,0,0))}
+  .mark{font-size:20px;font-weight:500}
+  .back{font-size:15px;letter-spacing:.12em;color:var(--muted);transition:color .2s}
+  .back:hover{color:var(--fg)}
+
+  main{max-width:980px;margin:0 auto;padding:110px 24px 80px}
+  .panel{background:#000;box-shadow:0 40px 90px -20px rgba(0,0,0,.75);padding:clamp(28px,5vw,64px)}
+  h1{font-weight:400;font-size:clamp(54px,8vw,104px);line-height:.9;text-transform:lowercase}
+  .sub{margin-top:10px;color:var(--muted);font-size:14px;letter-spacing:.2em;text-transform:uppercase}
+
+  .list{list-style:none;margin-top:clamp(28px,4vw,48px)}
+  .item{display:grid;grid-template-columns:120px 1fr;gap:clamp(16px,2.6vw,32px);align-items:center;padding:22px 0;border-top:1px solid var(--line)}
+  .item:last-child{border-bottom:1px solid var(--line)}
+  .thumb{display:block;aspect-ratio:1;overflow:hidden;border-radius:3px;background:#111}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .item:hover .thumb img{transform:scale(1.05)}
+  .meta{display:flex;align-items:center;gap:12px;font-size:14px;letter-spacing:.1em;color:var(--muted)}
+  .tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;border:1px solid #444;padding:2px 8px;border-radius:2px;color:#cfcfcf}
+  .tag.press{border-color:#8a7a5a;color:#e2cf9f}
+  .tag.debut{border-color:#6a6a8a;color:#c8c8ef}
+  .item h2{font-weight:400;font-size:clamp(20px,2.1vw,27px);line-height:1.2;margin:6px 0 4px}
+  .ja{font-family:"Noto Sans JP",system-ui,sans-serif;font-weight:300;font-size:14px;color:#bdbdbd;line-height:1.8}
+  .acts{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:8px;font-size:15px;letter-spacing:.06em;text-transform:lowercase}
+  .acts a{position:relative;padding-bottom:2px;color:#d8d8d8}
+  .acts a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--fg);transform:scaleX(0);transition:transform .4s}
+  .acts a:hover::after{transform:scaleX(1)}
+
+  footer{text-align:center;color:#5f5f5f;font-size:13px;margin-top:40px;letter-spacing:.06em}
+  @media(max-width:640px){
+    header{padding:18px 20px}
+    main{padding:80px 12px 60px}
+    .panel{padding:26px 18px}
+    .item{grid-template-columns:84px 1fr;gap:14px;padding:16px 0;align-items:start}
+    .meta{font-size:12px;gap:8px}
+    .item h2{font-size:20px}
+    .ja{font-size:13px}
+    .acts{font-size:14px;gap:4px 16px}
+  }
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<header>
+  <a class="mark" href="./">anaccelle</a>
+  <a class="back" href="./">← back</a>
+</header>
+
+<main>
+  <div class="panel">
+    <h1>news</h1>
+    <p class="sub">releases ・ features ・ press</p>
+    <ul class="list" id="list"></ul>
+  </div>
+  <footer>© <span id="yr">2026</span> anaccelle</footer>
+</main>
+
+<script>
+/* ===== ニュースの追加方法 =====
+   いちばん上に { ... } を1つ追加するだけ。新しい順に並べてください。
+   type: "release"（新曲） / "press"（掲載・コラボ） / "debut"
+   img : Spotifyのジャケット画像ID（ab67616d00001e02 の後ろの部分）、または画像のURL
+*/
+const SP_ALBUM = id => "https://open.spotify.com/album/" + id;
+const news = [
+  { date:"2026.10.20", type:"release", title:"New single “m!nd” released October 20, 2026!",
+    ja:"2026年10月20日、新曲「m!nd」がリリースされました！", img:"dbca564fb3140b3b5f978f83",
+    links:[["listen on spotify", SP_ALBUM("7uCJtEO5ybdSsC7t40Bc6D")]] },
+  { date:"2026.09.19", type:"release", title:"New single “honeycrisp” released September 19, 2026!",
+    ja:"2026年9月19日、新曲「honeycrisp」がリリースされました！", img:"5dc6dd09712383fc979d5865",
+    links:[["listen on spotify", SP_ALBUM("5eAoaF3EkU1EeBT58pkmAV")]] },
+  { date:"2026.09.16", type:"press", title:"“Red Umbrella” by Stellartree feat. anaccelle released September 16, 2026!",
+    ja:"2026年9月16日、MINT SOUNDS LINK の新ユニット Stellartree のデビューシングル「Red Umbrella」がリリースされました！anaccelle がリードボーカルとボーカルアレンジで参加しています。",
+    img:"419875076dc22a51878c0cad",
+    links:[["read on pr times","https://prtimes.jp/main/html/rd/p/000000024.000168503.html"],["listen on spotify", SP_ALBUM("182jQ8weyy3VqLsFsTQ3A8")]] },
+  { date:"2026.08.08", type:"release", title:"New single “lately” released August 8, 2026!",
+    ja:"2026年8月8日、新曲「lately」がリリースされました！", img:"1d39ced565f7be5af6b289d1",
+    links:[["listen on spotify", SP_ALBUM("1J7PU7oMeteNnibPbd323m")]] },
+  { date:"2026.06.30", type:"release", title:"New single “alr” released June 30, 2026!",
+    ja:"2026年6月30日、新曲「alr」がリリースされました！", img:"ba2780420b4dda636f7ece1e",
+    links:[["listen on spotify", SP_ALBUM("0UjAzpRTtrZFAUHawygUpk")]] },
+  { date:"2026.05.23", type:"release", title:"New single “for you” released May 23, 2026!",
+    ja:"2026年5月23日、新曲「for you」がリリースされました！", img:"69b98521c327e5109f004104",
+    links:[["listen on spotify", SP_ALBUM("0f4kUjmtLBcL3mbEmJrPQg")]] },
+  { date:"2026.03.21", type:"release", title:"New single “my side” released March 21, 2026!",
+    ja:"2026年3月21日、新曲「my side」がリリースされました！", img:"c67ef1c6b9be08bf5079ef88",
+    links:[["listen on spotify", SP_ALBUM("4jKcTMyPFAgvhgbexy2RR9")]] },
+  { date:"2026.01.23", type:"release", title:"New single “stay” released January 23, 2026!",
+    ja:"2026年1月23日、新曲「stay」がリリースされました！", img:"3f94d5eb5e59c8b80c98e016",
+    links:[["listen on spotify", SP_ALBUM("3YRRlcMiPBgzgPePpOeACA")]] },
+  { date:"2025.12.26", type:"release", title:"New single “haven” released December 26, 2025!",
+    ja:"2025年12月26日、新曲「haven」がリリースされました！", img:"bc01de0b3a5a5893d8a08997",
+    links:[["listen on spotify", SP_ALBUM("4xKsXRouIsI7R8QZHlC1eV")]] },
+  { date:"2025.11.01", type:"release", title:"New single “drunk” released November 1, 2025!",
+    ja:"2025年11月1日、新曲「drunk」がリリースされました！", img:"471857d0c0028529bcf88276",
+    links:[["listen on spotify", SP_ALBUM("3slt9EmR29ParauF4wmDaN")]] },
+  { date:"2025.09.09", type:"release", title:"New single “seasons” released September 9, 2025!",
+    ja:"2025年9月9日、新曲「seasons」がリリースされました！", img:"7a5c930e59f0545e68ccdc00",
+    links:[["listen on spotify", SP_ALBUM("4ZJj3pjwUxQaeUngHk6EnE")]] },
+  { date:"2025.07.11", type:"debut", title:"Debut single “4AM” released July 11, 2025!",
+    ja:"2025年7月11日、デビューシングル「4AM」がリリースされました！", img:"65b1b8b9fd2651e1f24b6001",
+    links:[["listen on spotify", SP_ALBUM("1cdPYzdXGqh9wV4Wq9YoCF")],["youtube","https://www.youtube.com/watch?v=d91HGtwNPnk"]] },
+];
+
+const imgURL = v => v.startsWith("http") ? v : "https://i.scdn.co/image/ab67616d00001e02" + v;
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+document.getElementById("list").innerHTML = news.map(n => `
+  <li class="item">
+    <a class="thumb" href="${n.links[0][1]}" target="_blank" rel="noopener"><img src="${imgURL(n.img)}" alt="" loading="lazy"></a>
+    <div>
+      <div class="meta"><span>${n.date}</span><span class="tag ${n.type}">${n.type}</span></div>
+      <h2>${esc(n.title)}</h2>
+      <p class="ja">${esc(n.ja)}</p>
+      <div class="acts">${n.links.map(([t,u]) => `<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join("")}</div>
+    </div>
+  </li>`).join("");
+document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
