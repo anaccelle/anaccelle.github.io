@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>anaccelle Official Website | Japanese American Singer-Songwriter</title>
-<meta name="description" content="anaccelle（アナシーシェル）公式サイト。ニュージャージー州生まれ・アトランタ育ちの日系アメリカ人シンガーソングライター。英語と日本語で歌うヒップホップR&amp;B × インディーポップ。Official site of anaccelle, Japanese American singer-songwriter.">
+<title>anaccelle Official Website | Japanese American Singer Songwriter</title>
+<meta name="description" content="anaccelle（アナシーシェル）公式サイト。ニュージャージー州生まれ・アトランタ育ちの日系アメリカ人シンガーソングライター。英語と日本語で歌うヒップホップR&amp;B × インディーポップ。Official site of anaccelle, Japanese American singer songwriter.">
 <meta property="og:site_name" content="anaccelle">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:locale:alternate" content="en_US">
-<meta property="og:title" content="anaccelle Official Website | Japanese American Singer-Songwriter">
-<meta property="og:description" content="anaccelle（アナシーシェル）公式サイト。ニュージャージー州生まれ・アトランタ育ちの日系アメリカ人シンガーソングライター。英語と日本語で歌うヒップホップR&amp;B × インディーポップ。Official site of anaccelle, Japanese American singer-songwriter.">
+<meta property="og:title" content="anaccelle Official Website | Japanese American Singer Songwriter">
+<meta property="og:description" content="anaccelle（アナシーシェル）公式サイト。ニュージャージー州生まれ・アトランタ育ちの日系アメリカ人シンガーソングライター。英語と日本語で歌うヒップホップR&amp;B × インディーポップ。Official site of anaccelle, Japanese American singer songwriter.">
 <meta property="og:url" content="https://anaccelle.com">
 <meta property="og:image" content="https://anaccelle.com/images/top.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -24,7 +24,7 @@
   "name": "anaccelle",
   "alternateName": [
    "アナシーシェル",
-   "ana-sea-shell",
+   "ana sea shell",
    "Ana Michelle Sato",
    "佐藤愛夏",
    "さとうあな",
@@ -33,10 +33,10 @@
   ],
   "url": "https://anaccelle.com",
   "image": "https://anaccelle.com/images/about.jpg",
-  "description": "Japanese American singer-songwriter, born in New Jersey and raised in Atlanta. Hip-hop R&B meets indie pop, in English and Japanese.",
+  "description": "Japanese American singer songwriter, born in New Jersey and raised in Atlanta. Hip hop R&B meets indie pop, in English and Japanese.",
   "genre": [
    "R&B",
-   "Hip-hop",
+   "Hip hop",
    "Indie pop"
   ],
   "foundingDate": "2025-07-11",
@@ -61,7 +61,7 @@
     "@type": "Place",
     "name": "New Jersey, United States"
    },
-   "jobTitle": "Singer-songwriter",
+   "jobTitle": "Singer songwriter",
    "knowsLanguage": [
     "en",
     "ja",
@@ -277,7 +277,7 @@
   <a data-go="5">contact</a>
 </nav>
 <a class="mark" id="mark" data-go="0">anaccelle</a>
-<div class="count" id="count">01 — 06</div>
+<div class="count" id="count">01 / 06</div>
 <div class="dots" id="dots"></div>
 <div class="hint" id="hint">scroll / drag</div>
 
@@ -290,7 +290,7 @@
     <!-- 1 about -->
     <section class="face about"><div class="c">
       <h1>anaccelle</h1>
-      <p class="lede">\ japanese american singer-songwriter. born in new jersey, raised in atlanta. hip-hop r&amp;b meets indie pop, in english and japanese. /
+      <p class="lede">\ japanese american singer songwriter. born in new jersey, raised in atlanta. hip hop r&amp;b meets indie pop, in english and japanese. /
         <span class="jp">ニュージャージー州生まれ、アトランタ育ちの日系アメリカ人シンガーソングライター。</span></p>
       <a class="word more" href="about.html">about →</a>
     </div><div class="shade"></div></section>
@@ -415,7 +415,7 @@ function ui(){
   const i = Math.round(target);
   [...dots.children].forEach((d,j)=>d.classList.toggle("on", j===i));
   document.getElementById("count").textContent =
-    `${String(i+1).padStart(2,"0")} — ${String(N).padStart(2,"0")}`;
+    `${String(i+1).padStart(2,"0")} / ${String(N).padStart(2,"0")}`;
   document.getElementById("mark").classList.toggle("show", i>0);
   if(i>0) document.getElementById("hint").classList.add("hide");
 }
