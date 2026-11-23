@@ -108,6 +108,13 @@
   @media(max-width:900px){.face.musicwall{background-image:url(images/music-sm.jpg?v=1);background-position:62% 50%}}
   .face.about{cursor:pointer}
   .face.about .more{display:inline-block;margin-top:26px;font-size:clamp(18px,1.6vw,24px);letter-spacing:.1em}
+  /* トップの最新ニュース */
+  .latest{position:absolute;z-index:2;top:clamp(16px,3vh,28px);left:clamp(16px,2.5vw,32px);display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:clamp(14px,1.2vw,17px);letter-spacing:.04em;transition:background .3s,border-color .3s}
+  .latest:hover{background:rgba(0,0,0,.75);border-color:rgba(255,255,255,.35)}
+  .lt-tag{font-size:11px;letter-spacing:.22em;text-transform:uppercase;background:#ececec;color:#000;padding:3px 9px;border-radius:999px}
+  .lt-arrow{transition:transform .3s}
+  .latest:hover .lt-arrow{transform:translateX(4px)}
+  @media(max-width:640px){.latest{font-size:13px;gap:8px;padding:6px 12px 6px 6px}.lt-tag{font-size:10px;padding:2px 7px}}
   /* プロフィールの写真（images/about.jpg） */
   .face.about{background:#000 url(images/about.jpg?v=1) 75% 30% / cover no-repeat;justify-content:flex-start;text-align:left;padding-left:clamp(28px,6vw,90px)}
   .face.about::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.55) 35%,rgba(0,0,0,0) 62%)}
@@ -202,7 +209,7 @@
   <div class="cube" id="cube">
 
     <!-- 0 intro -->
-    <section class="face intro"><div class="c"><div class="logo">anaccelle</div></div><div class="shade"></div></section>
+    <section class="face intro"><a class="latest" id="latest" href="news.html"><span class="lt-tag">news</span><span id="latestText"></span><span class="lt-arrow">→</span></a><div class="c"><div class="logo">anaccelle</div></div><div class="shade"></div></section>
 
     <!-- 1 about -->
     <section class="face about"><div class="c">
@@ -281,6 +288,8 @@ const releases = [
 document.getElementById("list").innerHTML = releases.map(([t,d,id,img],i)=>
   `<li><a href="${AL(id)}" target="_blank" rel="noopener"><span class="art"><img src="${IMG(img)}" alt="${t} cover" loading="lazy" draggable="false">${i===0?'<span class="new">new</span>':''}</span><span class="t">${t}</span><small>${d}</small></a></li>`).join("");
 document.getElementById("yr").textContent = new Date().getFullYear();
+// トップの最新ニュース（いちばん新しい曲を自動表示）
+document.getElementById("latestText").textContent = `new single “${releases[0][0]}” out now`;
 
 /* ---------- cube engine ---------- */
 const stage = document.getElementById("stage");
