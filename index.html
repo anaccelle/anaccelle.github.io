@@ -133,7 +133,23 @@
   .dots button{width:6px;height:6px;border-radius:50%;border:1px solid var(--muted);background:none;cursor:pointer;transition:background .3s,border-color .3s}
   .dots button.on{background:var(--fg);border-color:var(--fg)}
   .hint{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:80;font-size:12px;letter-spacing:.24em;color:var(--muted);transition:opacity .8s}
-  .hint.hide{opacity:0}
+  .hint.hide{opacity:0;pointer-events:none}
+  .hint{display:flex;align-items:center;gap:14px;color:#cfcfcf}
+  .dice{position:relative;width:18px;height:18px;transform-style:preserve-3d;animation:roll 3.2s cubic-bezier(.6,.05,.3,1) infinite}
+  .dice i{position:absolute;inset:0;border:1px solid #ececec;background:rgba(255,255,255,.06)}
+  .dice i:nth-child(1){transform:translateZ(9px)}
+  .dice i:nth-child(2){transform:rotateY(180deg) translateZ(9px)}
+  .dice i:nth-child(3){transform:rotateY(90deg) translateZ(9px)}
+  .dice i:nth-child(4){transform:rotateY(-90deg) translateZ(9px)}
+  .dice i:nth-child(5){transform:rotateX(90deg) translateZ(9px)}
+  .dice i:nth-child(6){transform:rotateX(-90deg) translateZ(9px)}
+  @keyframes roll{
+    0%{transform:rotateX(-25deg) rotateY(35deg)}
+    30%{transform:rotateX(-115deg) rotateY(35deg)}
+    50%{transform:rotateX(-115deg) rotateY(35deg)}
+    80%{transform:rotateX(-115deg) rotateY(125deg)}
+    100%{transform:rotateX(-115deg) rotateY(125deg)}
+  }
 
   /* ---------- content ---------- */
   .logo{font-size:clamp(48px,8.5vw,128px);font-weight:500;letter-spacing:.02em;line-height:1;text-shadow:0 2px 30px rgba(0,0,0,.45)}
@@ -296,7 +312,7 @@
 <div class="dots" id="dots"></div>
 
 <div class="followbar" aria-label="follow anaccelle"><a class="fbtn sp" href="https://open.spotify.com/artist/3wBMm9BsmztlM4bzcWuP7U" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24zm5.5 17.3a.75.75 0 0 1-1 .25c-2.85-1.74-6.43-2.13-10.65-1.17a.75.75 0 1 1-.33-1.46c4.62-1.05 8.58-.6 11.74 1.33.36.22.47.69.25 1.05zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.26-2-8.23-2.58-12.09-1.41a.94.94 0 1 1-.54-1.8c4.4-1.33 9.88-.69 13.61 1.6.44.27.58.85.31 1.3zm.13-3.4C15.2 8.32 8.77 8.1 5.05 9.23a1.13 1.13 0 1 1-.65-2.16c4.27-1.3 11.37-1.05 15.85 1.61a1.13 1.13 0 0 1-1.15 1.95z"/></svg><span>follow on spotify</span></a><a class="fbtn ig" href="https://www.instagram.com/anaccelle/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.2 15.58 2.2 15.2 2.2 12s0-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.2 8.8 2.2 12 2.2zm0 4.86a4.94 4.94 0 1 0 0 9.88 4.94 4.94 0 0 0 0-9.88zm0 8.15a3.21 3.21 0 1 1 0-6.42 3.21 3.21 0 0 1 0 6.42zm5.14-9.5a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3z"/></svg><span>follow on instagram</span></a></div>
-<div class="hint" id="hint">scroll / drag</div>
+<div class="hint" id="hint"><span class="dice" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><span>scroll or drag to roll</span></div>
 
 <div class="stage" id="stage">
   <div class="cube" id="cube">
@@ -431,8 +447,11 @@ function loop(){
     const k = reduce ? 1 : .085;
     anim.p += (anim.goal - anim.p) * k;
     if(Math.abs(anim.goal - anim.p) < .002){
+      if(anim.peek && anim.goal > 0){ /* hold the tip */ }
+      else{
       if(anim.goal === 1) cur = anim.to;
       anim = null; ui();
+      }
     }
   }
   render();
@@ -549,6 +568,26 @@ const HASH = {"#music":3, "#visuals":4, "#contact":5, "#about":1};
 if(HASH[location.hash]!==undefined){ cur = HASH[location.hash]; }
 addEventListener("resize", ()=>{ layout(); render(); });
 layout(); ui(); loop();
+
+/* ---------- サイコロのヒント：最初に少しだけ傾けて立体だと見せる ---------- */
+let touched = false;
+function peek(axis, dir){
+  if(touched || anim || dragging || reduce) return;
+  anim = {to: mod(cur + dir, N), axis, dir, p:0, goal:.2, peek:true};
+  setTimeout(()=>{ if(anim && anim.peek) anim.goal = 0; }, 650);
+}
+function peekCycle(){
+  if(touched) return;
+  peek("x", 1);
+  setTimeout(()=>peek("y", 1), 1500);
+}
+setTimeout(peekCycle, 1300);
+const peekTimer = setInterval(()=>{ touched ? clearInterval(peekTimer) : peekCycle(); }, 7000);
+["wheel","pointerdown","keydown","touchstart"].forEach(t=>addEventListener(t, ()=>{
+  if(touched) return; touched = true;
+  if(anim && anim.peek){ anim = null; }
+  document.getElementById("hint").classList.add("hide");
+}, {capture:true, passive:true}));
 </script>
 </body>
 </html>
