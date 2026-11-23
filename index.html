@@ -65,6 +65,19 @@
   .face.intro::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.1) 45%,rgba(0,0,0,.7) 100%)}
   .face.intro .logo{font-size:clamp(44px,7vw,110px)}
   @media(max-width:900px){.face.intro{background-image:url(images/top-sm.jpg?v=2)}}
+  /* VISUALSの写真（images/visuals.jpg） */
+  .face.visuals{padding:0;display:grid;grid-template-columns:44% 1fr;align-items:center}
+  .face.visuals .photo{height:100%;background:#ddd url(images/visuals.jpg?v=1) 50% 40% / cover no-repeat}
+  .face.visuals .c{padding:30px clamp(24px,4vw,64px);max-width:none}
+  .face.visuals .row{flex-direction:column;align-items:center;gap:18px}
+  @media(max-width:900px){
+    .face.visuals{grid-template-columns:1fr;grid-template-rows:64% 1fr}
+    .face.visuals .photo{background-image:url(images/visuals-sm.jpg?v=1);background-position:50% 35%}
+    .face.visuals .c{padding:14px 18px}
+    .face.visuals h2{font-size:28px;margin-bottom:10px}
+    .face.visuals .row{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px 20px}
+    .face.visuals .row .word{font-size:16px}
+  }
   /* 3ページ目の写真（images/music.jpg） */
   .face.musicwall{background:#000 url(images/music.jpg?v=1) 60% 88% / cover no-repeat;align-items:flex-start;padding-top:clamp(40px,10vh,110px)}
   .face.musicwall::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,.12) 45%,rgba(0,0,0,.05) 100%)}
@@ -184,10 +197,8 @@
     </div><div class="shade"></div></section>
 
     <!-- 4 visuals -->
-    <section class="face"><div class="c">
+    <section class="face visuals"><div class="photo" role="img" aria-label="anaccelle"></div><div class="c">
       <h2>visuals</h2>
-      <!-- ▼ MVなどが出たら、embed/ の後ろの動画IDを差し替えてください -->
-      <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/d91HGtwNPnk?rel=0" title="anaccelle - 4AM" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
       <div class="row">
         <a class="word" href="https://open.spotify.com/artist/3wBMm9BsmztlM4bzcWuP7U" target="_blank" rel="noopener">spotify</a>
         <a class="word" href="https://music.apple.com/us/artist/anaccelle/1825533931" target="_blank" rel="noopener">apple music</a>
