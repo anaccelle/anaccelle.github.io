@@ -93,12 +93,14 @@
   .word::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--fg);transform:scaleX(0);transition:transform .4s}
   .word:hover::after{transform:scaleX(1)}
 
-  .list{list-style:none;text-align:left;columns:2;column-gap:56px}
-  .list li{break-inside:avoid}
-  .list li{border-bottom:1px solid #222;border-top:0}
-  .list a{display:flex;justify-content:space-between;align-items:baseline;padding:6px 2px;font-size:clamp(20px,2.2vw,32px);transition:padding .3s,color .3s}
-  .list a:hover{padding-left:12px;color:#fff}
-  .list small{color:var(--muted);font-size:clamp(15px,1.5vw,22px);letter-spacing:.04em}
+  .list{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(12px,1.6vw,22px) clamp(10px,1.4vw,18px);text-align:left}
+  .list a{display:block}
+  .list .art{position:relative;display:block;aspect-ratio:1;overflow:hidden;border-radius:3px;background:#111}
+  .list img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1),filter .4s;filter:saturate(.95)}
+  .list a:hover img{transform:scale(1.05);filter:saturate(1.1)}
+  .list .t{display:block;margin-top:8px;font-size:clamp(15px,1.25vw,19px);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .list small{display:block;color:var(--muted);font-size:clamp(12px,.95vw,14px);letter-spacing:.04em}
+  .list .new{font-size:10px !important;letter-spacing:.18em;position:absolute;left:6px;top:6px;margin:0;background:rgba(0,0,0,.7);color:#fff;padding:2px 6px;border-radius:2px}
   .new{font-size:clamp(12px,1.1vw,16px);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-left:10px}
   iframe{border:0;border-radius:10px;width:100%;max-width:640px;filter:grayscale(1);margin-bottom:28px}
   .row{display:flex;justify-content:center;flex-wrap:wrap;gap:20px 44px}
@@ -138,9 +140,9 @@
     .form .two{grid-template-columns:1fr}
     .form{gap:8px}
     .form textarea{height:4.6em}
-    .list{columns:1}
-    .list a{padding:5px 2px;font-size:18px}
-    .list small{font-size:14px}
+    .list{grid-template-columns:repeat(4,1fr);gap:12px 8px}
+    .list .t{font-size:12px;margin-top:4px}
+    .list small{font-size:11px}
   }
 </style>
 </head>
@@ -224,21 +226,24 @@
 <script>
 /* ---------- discography (新曲が出たら先頭に1行追加) ---------- */
 const SP = "https://open.spotify.com/artist/3wBMm9BsmztlM4bzcWuP7U";
+const IMG = h => "https://i.scdn.co/image/ab67616d00001e02" + h;
+const AL  = id => "https://open.spotify.com/album/" + id;
+// [曲名, 配信日, SpotifyアルバムID, ジャケット画像ID]  新曲は先頭に1行追加
 const releases = [
-  ["m!nd",       "2026.10.20", "https://open.spotify.com/album/7uCJtEO5ybdSsC7t40Bc6D"],
-  ["honeycrisp", "2026.09.19", "https://open.spotify.com/album/5eAoaF3EkU1EeBT58pkmAV"],
-  ["lately",     "2026.08.08", "https://open.spotify.com/album/1J7PU7oMeteNnibPbd323m"],
-  ["alr",        "2026.06.30", "https://open.spotify.com/album/0UjAzpRTtrZFAUHawygUpk"],
-  ["for you",    "2026.05.23", "https://open.spotify.com/album/0f4kUjmtLBcL3mbEmJrPQg"],
-  ["my side", "2026.03.21"],
-  ["stay",    "2026.01.23"],
-  ["haven",   "2025.12.26", "https://open.spotify.com/track/1dg8kaLovXjE1mLuxZuROm"],
-  ["seasons", "2025.09.09"],
-  ["drunk",   "2025"],
-  ["4am",     "2025.07.11", "https://open.spotify.com/track/3s9KBogeLUqLtm3Q11e2rD"],
+  ["m!nd",       "2026.10.20", "7uCJtEO5ybdSsC7t40Bc6D", "dbca564fb3140b3b5f978f83"],
+  ["honeycrisp", "2026.09.19", "5eAoaF3EkU1EeBT58pkmAV", "5dc6dd09712383fc979d5865"],
+  ["lately",     "2026.08.08", "1J7PU7oMeteNnibPbd323m", "1d39ced565f7be5af6b289d1"],
+  ["alr",        "2026.06.30", "0UjAzpRTtrZFAUHawygUpk", "ba2780420b4dda636f7ece1e"],
+  ["for you",    "2026.05.23", "0f4kUjmtLBcL3mbEmJrPQg", "69b98521c327e5109f004104"],
+  ["my side",    "2026.03.21", "4jKcTMyPFAgvhgbexy2RR9", "c67ef1c6b9be08bf5079ef88"],
+  ["stay",       "2026.01.23", "3YRRlcMiPBgzgPePpOeACA", "3f94d5eb5e59c8b80c98e016"],
+  ["haven",      "2025.12.26", "4xKsXRouIsI7R8QZHlC1eV", "bc01de0b3a5a5893d8a08997"],
+  ["seasons",    "2025.09.09", "4ZJj3pjwUxQaeUngHk6EnE", "7a5c930e59f0545e68ccdc00"],
+  ["drunk",      "2025",       "3slt9EmR29ParauF4wmDaN", "471857d0c0028529bcf88276"],
+  ["4am",        "2025.07.11", "1cdPYzdXGqh9wV4Wq9YoCF", "65b1b8b9fd2651e1f24b6001"],
 ];
-document.getElementById("list").innerHTML = releases.map(([t,d,u],i)=>
-  `<li><a href="${u||SP}" target="_blank" rel="noopener"><span>${t}${i===0?'<span class="new">new</span>':''}</span><small>${d}</small></a></li>`).join("");
+document.getElementById("list").innerHTML = releases.map(([t,d,id,img],i)=>
+  `<li><a href="${AL(id)}" target="_blank" rel="noopener"><span class="art"><img src="${IMG(img)}" alt="${t} cover" loading="lazy" draggable="false">${i===0?'<span class="new">new</span>':''}</span><span class="t">${t}</span><small>${d}</small></a></li>`).join("");
 document.getElementById("yr").textContent = new Date().getFullYear();
 
 /* ---------- cube engine ---------- */
