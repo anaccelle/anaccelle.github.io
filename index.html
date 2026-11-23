@@ -65,6 +65,26 @@
   .face.intro::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.1) 45%,rgba(0,0,0,.7) 100%)}
   .face.intro .logo{font-size:clamp(44px,7vw,110px)}
   @media(max-width:900px){.face.intro{background-image:url(images/top-sm.jpg?v=2)}}
+  /* CONTACTの写真（images/contact.jpg） */
+  .face.contactp{padding:0;display:grid;grid-template-columns:42% 1fr;align-items:center}
+  .face.contactp .photo{height:100%;background:#222 url(images/contact.jpg?v=1) 37% 50% / cover no-repeat}
+  .face.contactp{overflow:hidden;grid-template-rows:100%}
+  .face.contactp .c{padding:18px clamp(22px,3.5vw,56px);max-width:none;align-self:center}
+  .face.contactp h2{font-size:clamp(32px,3.4vw,50px);margin-bottom:10px}
+  .face.contactp .form textarea{height:4.2em}
+  .face.contactp .small{margin-top:8px}
+  @media(max-width:900px){
+    .face.contactp{display:flex;padding:24px 18px}
+    .face.contactp .photo{position:absolute;inset:0;background-image:url(images/contact-sm.jpg?v=1);background-position:37% 50%;opacity:.22}
+    .face.contactp .form input::placeholder,.face.contactp .form textarea::placeholder{color:#8a8a8a}
+    .face.contactp .form select{color:#9a9a9a}
+  }
+  @media(max-width:900px) and (max-height:720px){
+    .face.contactp{padding:12px 16px}
+    .face.contactp h2{font-size:26px;margin-bottom:4px}
+    .face.contactp .form{gap:2px}
+    .face.contactp .form textarea{height:3.4em}
+  }
   /* VISUALSの写真（images/visuals.jpg） */
   .face.visuals{padding:0;display:grid;grid-template-columns:44% 1fr;align-items:center}
   .face.visuals .photo{height:100%;background:#ddd url(images/visuals.jpg?v=1) 50% 40% / cover no-repeat}
@@ -208,7 +228,7 @@
     </div><div class="shade"></div></section>
 
     <!-- 5 contact -->
-    <section class="face" id="contact-face"><div class="c">
+    <section class="face contactp" id="contact-face"><div class="photo" role="img" aria-label="anaccelle"></div><div class="c">
       <h2>contact</h2>
       <!-- ▼ Formspree で作ったフォームのURLに差し替えてください（例: https://formspree.io/f/abcdwxyz） -->
       <form class="form" id="form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
