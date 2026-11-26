@@ -192,6 +192,11 @@
     .face.visuals .row{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px 20px}
     .face.visuals .row .word{font-size:16px}
   }
+  /* musicリストのページ：開くとジャケットが広がって、最後にグリッドに並ぶ */
+  .list.prep .art, .list.prep .t, .list.prep small{opacity:0}
+  .list .t, .list small{transition:opacity .5s ease}
+  .list.flying .t, .list.flying small{opacity:0}
+  .list.flying .art{position:relative;z-index:5}
   /* MUSIC をクリック → ジャケットが中心からぱーっと広がる */
   .face.musicwall .c{z-index:3}
   .burst{position:absolute;inset:0;z-index:2;pointer-events:none}
@@ -504,7 +509,7 @@ function loop(){
       if(anim.peek && anim.goal > 0){ /* hold the tip */ }
       else{
       if(anim.goal === 1) cur = anim.to;
-      anim = null; ui();
+      anim = null; ui(); if(typeof onLand==='function') onLand(cur);
       }
     }
   }
@@ -517,6 +522,7 @@ function start(to, axis, dir){
   to = mod(to, N);
   if(to === cur) return;
   anim = {to, axis, dir, p:0, goal:1};
+  if(typeof onLeave==='function') onLeave(to);
   document.body.classList.remove("open");
   ui();
 }
@@ -619,9 +625,45 @@ document.querySelector(".face.about").addEventListener("click", e=>{
   location.href = "about.html";
 });
 const HASH = {"#music":3, "#visuals":4, "#contact":5, "#about":1};
-if(HASH[location.hash]!==undefined){ cur = HASH[location.hash]; }
+if(HASH[location.hash]!==undefined){ cur = HASH[location.hash]; if(cur===3) setTimeout(()=>onLand(3),600); }
 addEventListener("resize", ()=>{ layout(); render(); });
 layout(); ui(); loop();
+
+
+/* ---------- music list: burst → settle into grid ---------- */
+const listEl = document.getElementById("list");
+const LIST_FACE = 3;
+const SCATTER = [[-36,-30,1.6,-6],[34,-32,1.4,5],[-14,-38,1.1,3],[42,4,1.3,-4],[-44,2,1.25,6],[-28,30,1.45,4],[28,32,1.5,-5],[2,38,1.15,-2],[-6,-22,1,-8],[46,-16,1,8],[-46,-20,1,-3]];
+let listShown = false;
+function onLeave(to){
+  if(to === LIST_FACE && !listShown && !reduce) listEl.classList.add("prep");
+}
+function onLand(i){
+  if(i !== LIST_FACE){ listShown = false; listEl.classList.remove("prep"); return; }
+  if(listShown || reduce){ listEl.classList.remove("prep"); listShown = true; return; }
+  listShown = true;
+  const face = faces[LIST_FACE].getBoundingClientRect();
+  const cx = face.left + face.width/2, cy = face.top + face.height/2;
+  const arts = [...listEl.querySelectorAll(".art")];
+  listEl.classList.add("flying");
+  listEl.classList.remove("prep");
+  let done = 0;
+  arts.forEach((el,k)=>{
+    const r = el.getBoundingClientRect();
+    const ox = r.left + r.width/2, oy = r.top + r.height/2;
+    const [px,py,sc,rot] = SCATTER[k % SCATTER.length];
+    const tx = cx + px/100*face.width - ox, ty = cy + py/100*face.height - oy;
+    const from = `translate(${cx-ox}px,${cy-oy}px) scale(.25)`;
+    const mid  = `translate(${tx}px,${ty}px) scale(${sc}) rotate(${rot}deg)`;
+    const a = el.animate([
+      {transform:from, opacity:0},
+      {transform:mid, opacity:1, offset:.38, easing:"ease-in-out"},
+      {transform:`translate(${tx}px,${ty-8}px) scale(${sc}) rotate(${rot}deg)`, opacity:1, offset:.62, easing:"cubic-bezier(.6,0,.2,1)"},
+      {transform:"none", opacity:1}
+    ], {duration:2400, delay:k*45, easing:"cubic-bezier(.16,1,.3,1)", fill:"backwards"});
+    a.onfinish = ()=>{ if(++done === arts.length) listEl.classList.remove("flying"); };
+  });
+}
 
 /* ---------- MUSIC burst ---------- */
 (()=>{
