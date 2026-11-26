@@ -192,6 +192,26 @@
     .face.visuals .row{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:8px 20px}
     .face.visuals .row .word{font-size:16px}
   }
+  /* MUSIC をクリック → ジャケットが中心からぱーっと広がる */
+  .face.musicwall .c{z-index:3}
+  .burst{position:absolute;inset:0;z-index:2;pointer-events:none}
+  .burst a{position:absolute;left:50%;top:50%;width:var(--w);aspect-ratio:1;margin:calc(var(--w)/-2) 0 0 calc(var(--w)/-2);
+    border-radius:4px;overflow:hidden;box-shadow:0 18px 40px -12px rgba(0,0,0,.75);
+    transform:translate(0,0) scale(.2) rotate(0deg);opacity:0;pointer-events:none;
+    transition:transform 1s cubic-bezier(.16,1.2,.3,1) var(--d), opacity .45s ease var(--d)}
+  .burst a img{width:100%;height:100%;object-fit:cover;display:block}
+  .burst a span{position:absolute;left:6px;bottom:5px;font-size:12px;letter-spacing:.06em;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.8);opacity:0;transition:opacity .3s}
+  .burst a:hover span{opacity:1}
+  .burst.on a{opacity:1;pointer-events:auto;transform:translate(var(--x),var(--y)) scale(1) rotate(var(--r));animation:bob 5s ease-in-out calc(var(--d) + 1s) infinite alternate}
+  .burst.on a:hover{z-index:2;filter:brightness(1.08)}
+  @keyframes bob{to{translate:0 -8px}}
+  .face.musicwall .word{position:relative;z-index:3}
+  .face.musicwall.burstOn{align-items:center;padding-top:0}
+  .face.musicwall.burstOn::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.45);transition:opacity .6s}
+  .viewall{display:block;width:max-content;margin:18px auto 0;padding:8px 18px;border:1px solid rgba(255,255,255,.6);border-radius:999px;font-size:clamp(14px,1.2vw,17px);letter-spacing:.12em;cursor:pointer;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .5s .7s,transform .5s .7s,background .3s,color .3s}
+  .burstOn .viewall{opacity:1;transform:none;pointer-events:auto}
+  .viewall:hover{background:#ececec;color:#000}
+  @media(prefers-reduced-motion:reduce){.burst a{transition:opacity .3s}.burst.on a{animation:none}}
   /* 3ページ目の写真（images/music.jpg） */
   .face.musicwall{background:#000 url(images/music.jpg?v=1) 60% 88% / cover no-repeat;align-items:flex-start;padding-top:clamp(40px,10vh,110px)}
   .face.musicwall::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,.12) 45%,rgba(0,0,0,.05) 100%)}
@@ -363,7 +383,7 @@
     </div><div class="shade"></div></section>
 
     <!-- 2 music (title) -->
-    <section class="face musicwall"><div class="c"><a class="word" data-go="3">music</a></div><div class="shade"></div></section>
+    <section class="face musicwall"><div class="burst" id="burst" aria-hidden="true"></div><div class="c"><a class="word" id="musicWord" href="#music">music</a><a class="viewall" id="viewAll" data-go="3">view all →</a></div><div class="shade"></div></section>
 
     <!-- 3 discography -->
     <section class="face"><div class="c">
@@ -602,6 +622,26 @@ const HASH = {"#music":3, "#visuals":4, "#contact":5, "#about":1};
 if(HASH[location.hash]!==undefined){ cur = HASH[location.hash]; }
 addEventListener("resize", ()=>{ layout(); render(); });
 layout(); ui(); loop();
+
+/* ---------- MUSIC burst ---------- */
+(()=>{
+  const face=document.querySelector(".face.musicwall"), burst=document.getElementById("burst");
+  // 散らばる位置（カードの中心からの距離：%）と大きさ・角度
+  const slots=[[-36,-30,1.15,-6],[34,-32,1,5],[-14,-40,.8,3],[16,-12,.0,0],[42,4,.95,-4],[-44,2,.9,6],[-28,30,1.05,4],[28,32,1.1,-5],[2,40,.85,-2],[-6,-24,.7,-8],[46,-14,.7,8],[-46,-20,.7,-3]].filter(s=>s[2]>0);
+  burst.innerHTML = releases.slice(0, slots.length).map(([t,,id,img],i)=>{
+    const [x,y,k,r]=slots[i];
+    return `<a href="${AL(id)}" target="_blank" rel="noopener" style="--x:${x}cqw;--y:${y}cqh;--w:calc(min(15cqw,22cqh)*${k});--r:${r}deg;--d:${i*55}ms" tabindex="-1"><img src="${IMG(img)}" alt="" loading="lazy" draggable="false"><span>${t}</span></a>`;
+  }).join("");
+  face.style.containerType="size";
+  const on = v => { burst.classList.toggle("on",v); face.classList.toggle("burstOn",v); };
+  document.getElementById("musicWord").addEventListener("click", e=>{
+    e.preventDefault(); e.stopPropagation();
+    if(burst.classList.contains("on")) go(3); else on(true);
+  });
+  // 他の面へ移ったら元に戻す（もう一度クリックで再生）
+  setInterval(()=>{ if(cur!==2 && !anim && burst.classList.contains("on")) on(false); }, 500);
+})();
+
 /* ---------- mini music player ---------- */
 (()=>{
   const [title,,albumId] = releases[0];
